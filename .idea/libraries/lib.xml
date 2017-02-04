@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/cw/lib/metrik.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/demorpg.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/FileStore.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/jode-1.1.2-pre1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/log4j-1.2.16.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/xstream-1.4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/mysql-connector-java-5.1.18-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/netty-3.5.0.Final.jar!/" />
+      <root url="jar://$PROJECT_DIR$/cw/lib/xpp3-1.1.3.4.C.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
