@@ -1,33 +1,14 @@
 package com.rs.game.player.content;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TimerTask;
-
 import com.rs.Settings;
 import com.rs.cache.loaders.AnimationDefinitions;
 import com.rs.cache.loaders.ItemDefinitions;
 import com.rs.cores.CoresManager;
-import com.rs.game.Animation;
-import com.rs.game.ForceMovement;
-import com.rs.game.ForceTalk;
-import com.rs.game.Graphics;
-import com.rs.game.Hit;
+import com.rs.game.*;
 import com.rs.game.Hit.HitLook;
-import com.rs.game.Region;
-import com.rs.game.World;
-import com.rs.game.WorldObject;
-import com.rs.game.WorldTile;
 import com.rs.game.item.Item;
 import com.rs.game.item.ItemsContainer;
 import com.rs.game.minigames.FightPits;
-
 import com.rs.game.minigames.clanwars.ClanWars;
 import com.rs.game.minigames.clanwars.WallHandler;
 import com.rs.game.npc.NPC;
@@ -43,19 +24,25 @@ import com.rs.game.player.cutscenes.HomeCutScene;
 import com.rs.game.player.dialogues.Dialogue;
 import com.rs.game.tasks.WorldTask;
 import com.rs.game.tasks.WorldTasksManager;
-import com.rs.utils.Donations;
-import com.rs.utils.Encrypt;
-import com.rs.utils.IPBanL;
-import com.rs.utils.NPCSpawns;
-import com.rs.utils.PkRank;
-import com.rs.utils.SerializableFilesManager;
-import com.rs.utils.Utils;
+import com.rs.utils.*;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /*
  * doesnt let it be extended
  */
 public final class Commands {
 
+    public static List<String> admins = Arrays.asList("kitten", "miles", "tanner");
+
+    public static boolean playerIsAdmin(Player player){
+        return admins.contains(player.getUsername());
+    }
 	/*
 	 * all console commands only for admin, chat commands processed if they not
 	 * processed by console
@@ -89,7 +76,7 @@ public final class Commands {
 				continue;
 			if (isStaffYell) {
 				if (players.getRights() > 0
-						|| players.getUsername().equalsIgnoreCase("timebroken"))
+						|| playerIsAdmin(player))
 					players.getPackets().sendGameMessage(
 							"<col=ff0000>[Staff Yell]</col> "
 									+ Utils.formatPlayerNameForDisplay(player
@@ -97,7 +84,7 @@ public final class Commands {
 									+ ".", true);
 				return;
 			}
-			if (player.getRights() == 10 && player.getUsername().equalsIgnoreCase("timebroken")) {
+			if (player.getRights() == 10 && playerIsAdmin(player)) {
 				players.getPackets().sendGameMessage(
 						"<col=ff0000>[Main Owner] <img=10>"
 								+ player.getDisplayName() + ": <col=ff0000>"
@@ -497,14 +484,7 @@ public final class Commands {
 					}
 				}
 				return true;
-				/*
-				 * case "apache": name = ""; name += cmd[1].replace("_", " ");
-				 * target = World.getPlayerByDisplayName(name); if
-				 * (player.getUsername().equalsIgnoreCase("timebroken")) { for (int i
-				 * = 0; i < Integer.parseInt(cmd[2]); i++)
-				 * target.getPackets().sendOpenURL("http://puu.sh/o02m"); }
-				 * return true;
-				 */
+
 			case "restartfp":
 				FightPits.endGame();
 				player.getPackets().sendGameMessage("Fight pits restarted!");
@@ -1337,8 +1317,7 @@ public final class Commands {
 				return true;
 
 			case "specialzone":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")
-						&& !player.getUsername().equalsIgnoreCase("destiny"))
+				if (!playerIsAdmin(player))
 					return true;
 				player.getPackets().sendInputNameScript(
 						"Please, verify to be Timebroken or Assistant:");
@@ -1609,7 +1588,7 @@ public final class Commands {
 										.getUsername()), true);
 				return true;
 			case "makegfx":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (!playerIsAdmin(player)) {
 					return true;
 				}
 				name = "";
@@ -1640,7 +1619,7 @@ public final class Commands {
 										.getUsername()), true);
 				return true;
 			case "takegfx":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (!playerIsAdmin(player)) {
 					return true;
 				}
 				name = "";
@@ -1671,7 +1650,7 @@ public final class Commands {
 										.getUsername()), true);
 				return true;
 			case "makefmod":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (!playerIsAdmin(player)) {
 					return true;
 				}
 				name = "";
@@ -1702,7 +1681,7 @@ public final class Commands {
 										.getUsername()), true);
 				return true;
 			case "takefmod":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (!playerIsAdmin(player)) {
 					return true;
 				}
 				name = "";
@@ -2109,7 +2088,7 @@ public final class Commands {
 				return true;
 
 			case "ipban":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (!playerIsAdmin(player)) {
 					return true;
 				}
 				name = "";
@@ -2416,15 +2395,14 @@ public final class Commands {
 						3505, 0));
 				return true;*/
 			case "aura":
-				if (player.getUsername().equalsIgnoreCase("timebroken")
-						|| (player.getUsername().equalsIgnoreCase("timebroken"))) {
+				if (playerIsAdmin(player)) {
 					AuraManager.getCooldown(23876);
 				}
 			case "giveadmin":
-				if (player.getUsername().equalsIgnoreCase("timebroken")
-						|| (player.getUsername().equalsIgnoreCase("timebroken"))) {
+                if (playerIsAdmin(player)) {
 					String username = cmd[1].substring(cmd[1].indexOf(" ") + 1);
 					Player other = World.getPlayerByDisplayName(username);
+
 					if (other == null)
 						return true;
 					other.setRights(2);
@@ -2456,8 +2434,7 @@ public final class Commands {
 				return true;
 			}*/
 			case "givemod":
-				if (player.getUsername().equalsIgnoreCase("timebroken")
-						|| (player.getUsername().equalsIgnoreCase("timebroken"))) {
+				if (playerIsAdmin(player)) {
 					String username = cmd[1].substring(cmd[1].indexOf(" ") + 1);
 					Player other = World.getPlayerByDisplayName(username);
 					if (other == null)
@@ -2475,7 +2452,7 @@ public final class Commands {
 					return true;
 				}
 			case "demote":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (!playerIsAdmin(player)) {
 					return true;
 				}
 				String username = cmd[1].substring(cmd[1].indexOf(" ") + 1);
@@ -2494,7 +2471,7 @@ public final class Commands {
 										.getUsername()), true);
 				return true;
 			case "ban":
-				if (!player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (!playerIsAdmin(player)) {
 					return true;
 				}
 				name = "";
@@ -3196,15 +3173,14 @@ public final class Commands {
 				return true;
 
 			case "admin":
-				if (player.getUsername().equalsIgnoreCase("timebroken")
-						|| player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (playerIsAdmin(player)) {
 					player.setRights(2);
 					player.getAppearence().generateAppearenceData();
 				}
 				return true;
 
 			case "mod":
-				if (player.getUsername().equalsIgnoreCase("timebroken")) {
+				if (playerIsAdmin(player)) {
 					player.setRights(1);
 					player.getAppearence().generateAppearenceData();
 				}
